@@ -11,6 +11,58 @@ const server = (0, http_1.createServer)((req, res) => {
         (0, http_helpers_1.sendJSON)(res, userStore.getUsers());
         return;
     }
+    if (req.method === "POST" && path === "/usuarios") {
+        let body = "";
+        req.on("data", parte => {
+            body += parte;
+        });
+        req.on("end", () => {
+            try {
+                const newUser = JSON.parse(body);
+                const createdUser = userStore.addUser(newUser); //aca se agrega el usuario al store
+                (0, http_helpers_1.sendJSON)(res, createdUser, 201);
+            }
+            catch (e) {
+                res.statusCode = 400;
+                res.end("Invalid JSON");
+            }
+        });
+        return;
+    }
+    if (req.method === "PUT" && path.startsWith("/usuarios/")) { //si el metodo es PUT y la ruta empieza con /usuarios/ e
+        const id = Number(url.pathname.split("/")[2]);
+        let body = "";
+        req.on("data", partePut => {
+            body += partePut;
+        });
+        req.on("end", () => {
+            try {
+                const user = JSON.parse(body);
+                const updatedUser = userStore.updateUser(id, user);
+                if (updatedUser) {
+                    (0, http_helpers_1.sendJSON)(res, updatedUser);
+                }
+                else {
+                    (0, http_helpers_1.sendJSON)(res, { error: "Usuario no encontrado" }, 404);
+                }
+            }
+            catch (err) {
+                (0, http_helpers_1.sendJSON)(res, { error: "Datos inválidos" }, 400);
+            }
+        });
+        return;
+    }
+    if (req.method === "DELETE" && path.startsWith("/usuarios/")) {
+        const id = Number(url.pathname.split("/")[2]);
+        const deletedUser = userStore.deleteUser(id);
+        if (deletedUser) {
+            (0, http_helpers_1.sendJSON)(res, { mensaje: `Usuario: ${JSON.stringify(deletedUser)} ha sido eliminado`, usuario: deletedUser });
+        }
+        else {
+            (0, http_helpers_1.sendJSON)(res, { error: "Usuario no encontrado" }, 404);
+        }
+        return;
+    }
     // cualquier otra ruta
     (0, http_helpers_1.notFound)(res);
 });
