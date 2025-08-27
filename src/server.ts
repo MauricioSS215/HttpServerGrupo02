@@ -93,6 +93,9 @@ const server = createServer((req, res) => {
   notFound(res);
 });
 
+/**
+ * Start the HTTP server.
+ */
 server.listen(3000, () => {
   console.log("Servidor escuchando en http://localhost:3000");
 });
