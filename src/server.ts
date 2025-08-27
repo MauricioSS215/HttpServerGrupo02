@@ -1,3 +1,19 @@
+/**
+ * HTTP server for managing users.
+ * 
+ * This server provides a simple REST API for user management, supporting the following endpoints:
+ * 
+ * - `GET /usuarios`: Returns a list of all users.
+ * - `POST /usuarios`: Creates a new user with the data provided in the request body (JSON).
+ * - `GET /usuarios/:id`: Returns the user with the specified ID.
+ * - `PUT /usuarios/:id`: Updates the user with the specified ID using the data provided in the request body (JSON).
+ * - `DELETE /usuarios/:id`: Deletes the user with the specified ID.
+ * 
+ * The server uses helper functions for path normalization, JSON responses, and 404 handling.
+ * User data is managed in-memory via the `UserStore` class.
+ * 
+ * @module server
+ */
 import { createServer } from "http";
 import { normalizePath, sendJSON, notFound } from "./http-helpers";
 import { UserStore } from "./store";
