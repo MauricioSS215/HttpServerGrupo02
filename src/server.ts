@@ -53,15 +53,26 @@ const server = createServer((req, res) => {
     return;
   }
   if (req.method === "DELETE" && path.startsWith("/usuarios/")) {
-  const id = Number(url.pathname.split("/")[2]);
-  const deletedUser = userStore.deleteUser(id);
-  if (deletedUser) {
-    sendJSON(res, { mensaje: `Usuario: ${JSON.stringify(deletedUser)} ha sido eliminado`, usuario: deletedUser });
-  } else {
-    sendJSON(res, { error: "Usuario no encontrado" }, 404);
+    const id = Number(url.pathname.split("/")[2]);
+    const deletedUser = userStore.deleteUser(id);
+    if (deletedUser) {
+      sendJSON(res, { mensaje: `Usuario: ${JSON.stringify(deletedUser)} ha sido eliminado`, usuario: deletedUser });
+    } else {
+      sendJSON(res, { error: "Usuario no encontrado" }, 404);
+    }
+    return;
   }
-  return;
-}
+
+  if (req.method === "GET" && path.startsWith("/usuarios/")) {
+    const id = Number(url.pathname.split("/")[2]);
+    const user = userStore.getUsers().find(u => u.id === id);
+    if (user) {
+      sendJSON(res, user);
+    } else {
+      sendJSON(res, { error: "Usuario no encontrado" }, 404);
+    }
+    return;
+  }
   // cualquier otra ruta
   notFound(res);
 });
